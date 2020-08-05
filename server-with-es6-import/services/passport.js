@@ -4,6 +4,7 @@ dotenv.config();
 
 import passport from 'passport';
 import passportGoogle from 'passport-google-oauth20';
+import User from '../models/User.js';
 
 const GoogleStrategy = passportGoogle.Strategy;
 
@@ -15,9 +16,7 @@ passport.use(
             callbackURL: '/auth/google/callback'
         },
         (accessToken, refreshToken, profile, done) => {
-            console.log('accessToken:', accessToken);
-            console.log('refreshToken:', refreshToken);
-            console.log('profile:', profile);
+            User.create({ googleId: profile.id });
         }
     )
 );

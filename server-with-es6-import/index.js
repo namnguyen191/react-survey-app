@@ -9,8 +9,19 @@ import mongoose from 'mongoose';
 const app = express();
 
 // CONNECTING TO MONGOOSE DB
-mongoose.connect({
+mongoose
+    .connect(process.env.MONGODB_CONNECTION_STRING, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    })
+    .then(
+        () => console.log('Connected to DB!'),
+        (err) => console.log('Error:', err)
+    );
 
+mongoose.connection.on('error', (err) => {
+    logError(err);
 });
 
 // GOOGLE OAUTH ROUTES HANDLER
