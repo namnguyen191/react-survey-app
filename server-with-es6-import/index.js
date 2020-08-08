@@ -3,26 +3,36 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import mongoose from 'mongoose';
+import cookieSession from 'cookie-session';
+import passport from 'passport';
+
+import dbConnection from './services/database.js';
 
 // EXPRESS INIT
 const app = express();
 
-// CONNECTING TO MONGOOSE DB
-mongoose
-    .connect(process.env.MONGODB_CONNECTION_STRING, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
+// COOKIES INIT
+const daysToMilliSecs = 24 * 60 * 60 * 1000;
+const cookiesKeysArray = [
+    process.env.COOKIE_KEY_1,
+    process.env.COOKIE_KEY_2,
+    process.env.COOKIE_KEY_3,
+    process.env.COOKIE_KEY_4,
+    process.env.COOKIE_KEY_5
+];
+app.use(
+    cookieSession({
+        maxAge: 30 * daysToMilliSecs,
+        keys: cookiesKeysArray // 1 key will be selected randomly upon creating a cookie for an additional level of security
     })
-    .then(
-        () => console.log('Connected to DB!'),
-        (err) => console.log('Error:', err)
-    );
+);
 
-mongoose.connection.on('error', (err) => {
-    logError(err);
-});
+// TELL PASSPORT TO USE COOKIE FOR AUTH
+app.use(passport.initialize());
+app.use(passport.session());
+
+// CONNECTING TO MONGOOSE DB
+dbConnection();
 
 // GOOGLE OAUTH ROUTES HANDLER
 import './services/passport.js';

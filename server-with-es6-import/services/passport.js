@@ -8,6 +8,16 @@ import User from '../models/User.js';
 
 const GoogleStrategy = passportGoogle.Strategy;
 
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    User.findById(id).then((user) => {
+        done(null, user);
+    });
+});
+
 passport.use(
     new GoogleStrategy(
         {
@@ -16,7 +26,17 @@ passport.use(
             callbackURL: '/auth/google/callback'
         },
         (accessToken, refreshToken, profile, done) => {
-            User.create({ googleId: profile.id });
+            User.findOne({ googleId: profile.id }).then((existingUser) => {
+                if (existingUser) {
+                    // We already have a user
+                    done(null, existingUser);
+                } else {
+                    // New user
+                    new User({ googleId: profile.id }).save().then((user) => {
+                        done(null, user);
+                    });
+                }
+            });
         }
     )
 );
