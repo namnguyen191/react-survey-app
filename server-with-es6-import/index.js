@@ -47,6 +47,17 @@ authRoutes(app);
 import billingRoutes from './routes/billingRoutes.js';
 billingRoutes(app);
 
+if (process.env.NODE_ENV === 'production') {
+    // MAKE SURE THAT EXPRESS WILL SERVE UP PROD ASSETS
+    app.use(express.static('client/build'));
+
+    // MAKE SURE THAT EXPRESS WILL SERVE UP THE INDEX.HTML FILE IF IT DOES NOT REGCONIZE THE ROUTE
+    const path = require(path);
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+}
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
 console.log('App is running on PORT:', process.env.PORT);
