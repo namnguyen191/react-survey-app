@@ -52,7 +52,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 
     // MAKE SURE THAT EXPRESS WILL SERVE UP THE INDEX.HTML FILE IF IT DOES NOT REGCONIZE THE ROUTE
-    const path = require(path);
+    import path from 'path';
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
