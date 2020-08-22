@@ -54,6 +54,7 @@ if (process.env.NODE_ENV === 'production') {
 
     // MAKE SURE THAT EXPRESS WILL SERVE UP THE INDEX.HTML FILE IF IT DOES NOT REGCONIZE THE ROUTE
     app.get('*', (req, res) => {
+        const __dirname = path.resolve();
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
 }
