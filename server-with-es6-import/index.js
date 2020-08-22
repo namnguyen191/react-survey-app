@@ -6,6 +6,7 @@ import express from 'express';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
 import bodyParser from 'body-parser';
+import path from 'path';
 
 import dbConnection from './services/database.js';
 
@@ -52,7 +53,6 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 
     // MAKE SURE THAT EXPRESS WILL SERVE UP THE INDEX.HTML FILE IF IT DOES NOT REGCONIZE THE ROUTE
-    import path from 'path';
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
