@@ -1,14 +1,18 @@
-//INIT .env
 import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
 import bodyParser from 'body-parser';
 import path from 'path';
 
+import './services/passport.js';
 import dbConnection from './services/database.js';
+import authRoutes from './routes/authRoutes.js';
+import billingRoutes from './routes/billingRoutes.js';
+import surveyRoutes from './routes/surveyRoutes.js';
+
+//INIT .env
+dotenv.config();
 
 // EXPRESS INIT
 const app = express();
@@ -40,13 +44,13 @@ app.use(passport.session());
 dbConnection();
 
 // GOOGLE OAUTH ROUTES HANDLER
-import './services/passport.js';
-import authRoutes from './routes/authRoutes.js';
 authRoutes(app);
 
 // STRIPE BILLING ROUTES HANDLER
-import billingRoutes from './routes/billingRoutes.js';
 billingRoutes(app);
+
+// SURVEY ROUTES
+surveyRoutes(app);
 
 if (process.env.NODE_ENV === 'production') {
     // MAKE SURE THAT EXPRESS WILL SERVE UP PROD ASSETS
