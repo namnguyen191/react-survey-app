@@ -32,8 +32,6 @@ const surveyRoutes = (app) => {
         // Using mailer to send the email
         try {
             const { subject, recipients } = survey;
-            console.log('Recipients: ', recipients[0]);
-            console.log('Subject: ', subject);
             await sendMail(survey, surveyTemplate(survey));
             await survey.save();
             req.user.credits -= 1;
@@ -56,6 +54,7 @@ const surveyRoutes = (app) => {
 
     // Doesn't need async cause Sengrid doesn't need any real response
     app.post('/api/surveys/webhooks', (req, res) => {
+        console.log('Webhook received!');
         const p = new Path('/api/surveys/:surveyId/:choice');
         const events = req.body.map((event) => {
             const match = p.test(new URL(event.url).pathname);
